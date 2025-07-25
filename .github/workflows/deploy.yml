@@ -48,9 +48,9 @@ jobs:
 
           sudo chown -R $USER:$USER .
           
-          bun install
+          /home/deploy/.bun/bin/bun install
           
-          bunx prisma generate client
+          /home/deploy/.bun/bin/bunx prisma generate client
 
           sudo systemctl restart csbookclub
 

@@ -45,7 +45,6 @@ jobs:
           cd ${{ secrets.DEPLOY_PATH }}
           
           echo "Deployment started at $(date)"
-          
 
           sudo chown -R $USER:$USER .
           

@@ -49,3 +49,14 @@ jobs:
           
           echo "Deployment completed at $(date)"
         EOF
+
+    - name: Cleanup SSH agent
+      if: always()
+      run: |
+        if [ -n "$SSH_AUTH_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+          ssh-add -D
+          eval $(ssh-agent -k)
+        fi
+        
+        echo "Deployment completed at $(date)"
+        EOF

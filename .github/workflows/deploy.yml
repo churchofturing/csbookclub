@@ -25,19 +25,19 @@ jobs:
         # Test SSH connection
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} "echo 'SSH connection successful'"
     
-    # - name: Rsync repository to server
-    #   run: |
-    #     rsync -avz --delete \
-    #       -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-    #       --exclude='.git/' \
-    #       --exclude='.github/' \
-    #       --exclude='node_modules/' \
-    #       --exclude='.env*' \
-    #       --exclude='*.log' \
-    #       --exclude='__pycache__/' \
-    #       --exclude='*.pyc' \
-    #       --exclude='vendor/' \
-    #       ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
+    - name: Rsync repository to server
+      run: |
+        rsync -avz --delete \
+          -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+          --exclude='.git/' \
+          --exclude='.github/' \
+          --exclude='node_modules/' \
+          --exclude='.env*' \
+          --exclude='*.log' \
+          --exclude='__pycache__/' \
+          --exclude='*.pyc' \
+          --exclude='vendor/' \
+          ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
     
     - name: Run post-deployment commands on server
       run: |
@@ -46,31 +46,20 @@ jobs:
           
           echo "Deployment started at $(date)"
           
-          # Set proper ownership and permissions
-          #sudo chown -R $USER:$USER .
-          #find . -type f -exec chmod 644 {} \;
-          #find . -type d -exec chmod 755 {} \;
+
+          sudo chown -R $USER:$USER .
           
-          # Example: Node.js application
-          # npm install --production
-          # npm run build
-          # pm2 restart app || pm2 start ecosystem.config.js
+          bun install
           
-          # Example: PHP application
-          # composer install --no-dev --optimize-autoloader
-          # php artisan migrate --force
-          # php artisan config:cache
-          # php artisan route:cache
-          # sudo systemctl reload php8.1-fpm
-          # sudo systemctl reload nginx
-          
-          # Example: Python application
-          # python3 -m venv venv
-          # source venv/bin/activate
-          # pip install -r requirements.txt
-          # python manage.py migrate
-          # sudo systemctl restart gunicorn
-          # sudo systemctl reload nginx
+          bunx prisma generate client
+
+          sudo systemctl restart csbookclub
+
+          sleep 2
+
+          sudo systemctl status csbookclub
+
+          sudo systemctl reload nginx
           
           echo "Deployment completed at $(date)"
         EOF

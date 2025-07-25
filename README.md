@@ -162,6 +162,7 @@ If you encounter issues or have questions:
 
 - Check the [Issues](https://github.com/churchofturing/csbookclub/issues) page
 - Create a new issue with detailed information
+- Join #daclub on [irc.csbook.club](irc.csbook.club) port 6697 (SSL only)
 - For urgent matters, contact: churchofturing@gmail.com
 
 ---

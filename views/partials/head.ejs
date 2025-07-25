@@ -1,0 +1,40 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+
+<title><%= (locals.page && locals.page.title) || "CS Book Club" %></title>
+<meta name="keywords" content="computer, science, lambda, compsci, book, study, programming, math">
+<meta name="author" content="CS Book Club">
+<meta name="robots" content="index,follow">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta name="description" content="<%= (locals.page && locals.page.desc) || 'A computer science focused BBS textboard.' %>">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="<%= (locals.page && locals.page.url) || '' %>">
+<meta property="og:title" content="<%= (locals.page && locals.page.title) || 'CS Book Club' %>">
+<meta property="og:description" content="<%= (locals.page && locals.page.desc) || 'A computer science focused BBS textboard.' %>">
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png">
+<link rel="manifest" href="/public/site.webmanifest">
+
+<link rel="stylesheet" href="/public/base.css">
+<link rel="stylesheet" href="/public/style.css">
+
+<script type="text/javascript" src="/public/styleInit.js"></script>
+<script type="text/javascript" src="/public/themeManager.js"></script>
+
+
+<% if (locals.page.rss) { %>
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="<%= locals.page.rss %>">
+<% } %>
+
+<% if (locals.user && locals.user.role.split(",").includes("ADMIN")) { %>
+  <% if (locals.user.role.split(",").includes("ADMIN")) { %>
+    <script type="text/javascript" src="/public/admin.js"></script>
+  <% } %>
+<% } %>

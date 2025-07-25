@@ -1,0 +1,13 @@
+# Allow all user agents
+User-agent: *
+
+# Disallow sensitive or irrelevant directories
+Disallow: /admin/
+Disallow: /api/
+Disallow: /prog/
+
+# Allow everything else
+Allow: /
+
+# Sitemap location
+Sitemap: https://csbook.club/sitemap.xml

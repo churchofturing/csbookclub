@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  password      String
+  role          String         @default("USER")
+  bannedAt      DateTime?
+  topics        Topic[]
+  threads       Thread[]
+  replies       Reply[]
+  auditActions  ModAudit[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  lastPostedAt  DateTime?
+  bans          Ban[]
+  referralCodes ReferralCode[]
+  referredById  Int? // FK to another user
+  referredBy    User?          @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals     User[]         @relation("UserReferrals")
+  @@index([id])
+}
+
+model Topic {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  title       String
+  body        String
+  bodyHtml    String
+  slug        String   @unique
+  threads     Thread[]
+  lastBumped  DateTime @default(now())
+  topicCount  Int      @default(0)
+  pinned      Boolean  @default(false)
+  ip          String
+
+  @@index([slug])
+}
+
+model Thread {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  title       String
+  body        String
+  bodyHtml    String
+  topic       Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId     Int
+  replies     Reply[]
+  lastBumped  DateTime @default(now())
+  globalCount BigInt
+  replyCount  Int @default(0)
+  pinned      Boolean  @default(false)
+  ip          String
+  slug        String   @default("")
+  @@index([topicId, pinned, lastBumped])
+  @@index([createdById])
+}
+
+model Reply {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  body        String
+  bodyHtml    String
+  thread      Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId    Int
+  globalCount BigInt
+  ip          String
+  progName    String  @default("")
+
+  @@index([threadId])
+  @@index([threadId, createdAt])
+  @@index([createdById])
+}
+
+model ModAudit {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  title       String?
+  body        String?
+  reason      String
+  postedBy    String?
+  action      String
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+model Ban {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+}
+
+model ReferralCode {
+  id     Int     @id @default(autoincrement())
+  code   String  @unique
+  active Boolean @default(true)
+  user   User?   @relation(fields: [userId], references: [id])
+  userId Int?
+}

@@ -1,0 +1,25 @@
+export const DIFFERENT_PASSWORDS = 'Passwords do not match.';
+export const USERNAME_REQUIRED = 'Username is required.';
+export const PASSWORD_REQUIRED = 'Password is required.';
+export const INCORRECT_PASSWORD = 'Incorrect password.';
+export const CONFIRMATION_REQUIRED = 'Password confirmation is required.';
+export const PASSWORD_MIN_LEN = 'Passwords need to be 10 characters or more.';
+export const PASSWORD_MIN_MAX_LEN = 'Password length must be between 10 and 30 characters.';
+export const CONFIRM_PASSWORD_MIN_MAX_LEN =
+  'Confirmation password length must be between 10 and 30 characters.';
+export const USERNAME_MIN_MAX_LEN = 'Username must be greater than 1 and less than 26 characters.';
+export const USER_EXISTS = 'A user with this username exists.';
+export const USER_NOT_FOUND = 'User cannot be found.';
+export const bannedFor = (mins: string) => `You are banned, check back in ${mins} minutes`;
+export const THREAD_BODY_REQUIRED = 'Thread needs a body.';
+export const THREAD_TITLE_REQUIRED = 'Thread needs a title.';
+export const BODY_MAX_LENGTH = 'Body cannot be larger than 5000 characters.';
+export const TITLE_MAX_LENGTH = 'Title cannot be larger than 200 characters.';
+export const REPLY_BODY_REQUIRED = 'Reply needs a body.';
+export const floodTimer = (mins: string) => `You must wait ${mins} minutes to post again.`;
+export const SLUG_REQUIRED = 'A slug is required to create a topic.';
+export const SLUG_MAX_LENGTH = 'A slug cannot be larger than 10 characters.';
+export const SLUG_ALREADY_EXISTS = 'A topic with this slug already exists.';
+export const ANONYMOUS_LOGIN = 'Cannot log in to the anonymous account.';
+export const REFERRAL_REQUIRED = 'A referral code is required to register.';
+export const REFERRAL_INVALID = 'You have supplied an invalid referral code.';

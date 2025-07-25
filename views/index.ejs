@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <%- include('./partials/header'); %>
+
+    <div class="center">
+      <div class="hero">
+        <div class="hero__left">
+          <h1 class="hero__left__header">We're back!</h1>
+          <p class="hero__left__subtitle">The CS Book Club is a BBS textboard specifically for discussing everything computer science.</p>
+          <p class="hero__left__subtitle">This did exist a year ago, then life got in the way. Now I'm trying again.</p>
+          <p class="hero__left__subtitle">We now have an IRC server! Join us at:</p>
+          <p class="hero__left__subtitle"><i>#daclub</i> on <b>irc.csbook.club</b> port <i>6697</i> (SSL only)</p>
+          <a></a>
+        </div>
+        <div class="hero__right">
+          <img class="hero__right__image" src="/public/banners/<%=bannerImage%>" />
+        </div>
+      </div>
+      
+      <div class="topiclist">
+        <p class="topiclist__title">Here are some recently updated topics</p>
+  
+        <% for (var i = 0; i < topics.length; i++) { %>
+          <div class="topiclink">
+            <h2 class="topiclink__title">
+              <% if (topics[i].pinned) { %>
+                <img src='/public/sticky.gif' />
+              <% } %>
+              <%= topics[i].title %>
+            </h2>
+            <div class="topiclink__details">
+              <p class="postedby">posted <%= topics[i].createdAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %> by</p>
+              <a href="/user/<%= topics[i].createdBy.username %>" class="<%= topics[i].createdBy.username === 'admin' ? 'admin-username' : 'topiclink__user' %>"> 
+                <%= topics[i].createdBy.username %>
+                <% if (user && user.role.split(",").includes("ADMIN")) { %>
+                  [<%= topics[i].ip%>]
+                <% } %>
+              </a>
+            </div>
+    
+            <a href="/<%= topics[i].slug %>" class="topiclink__link"><%=topics[i]._count.threads%> threads</a>
+
+            <% if (user && user.role.split(",").includes("ADMIN")) { %>
+              <button data-id="<%=topics[i].id%>" data-type="TOPIC" data-action="delete" class="admin-button">Delete</button>
+              <% if ((topics[i].createdBy.bannedAt === null) && user.id !== topics[i].createdBy.id) { %>
+                <button data-user="<%=topics[i].createdBy.id%>" data-action="ban" class="admin-button">Ban</button>
+              <% } %>
+
+              <% if ((topics[i].createdBy.bannedAt > new Date()) && user.id !== topics[i].createdBy.id) { %>
+                <button data-user="<%=topics[i].createdBy.id%>" data-action="unban" class="admin-button">Unban</button>
+              <% } %>
+
+              <% if (topics[i].pinned === false) { %>
+                <button data-id="<%=topics[i].id%>" data-action="pin" data-type="TOPIC" class="admin-button">Pin</button>
+              <% } else { %>
+                <button data-id="<%=topics[i].id%>" data-action="unpin" data-type="TOPIC" class="admin-button">Unpin</button>
+              <% } %>
+            <% } %>
+          </div>
+    
+          <hr />
+        <% } %>
+      </div>
+    </div>
+
+    <%- include('./partials/footer'); %>
+  </body>
+</html>

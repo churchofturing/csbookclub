@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <%- include('./partials/header'); %>
+
+    <div class="center">
+      <div class="admin__panel">
+        <h1>Admin</h1>
+        <hr />
+        <h3>Recent mod audit</h3>
+        <div class="admin__panel__table">
+          <table class="audit">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Reason</th>
+                <th>Body</th>
+                <th>Created By</th>
+                <th>At</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let i = 0; i < auditEntries.length; i++) { %>
+                <tr>
+                  <td><%=auditEntries[i].action%></td>
+                  <td><%=auditEntries[i].reason%></td>
+                  <td><%=auditEntries[i].body ? auditEntries[i].body.slice(0, 500) : null%></td>
+                  <td><%=auditEntries[i].createdBy%></td>
+                  <td><%=auditEntries[i].createdAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Banned IP addresses.</h3>
+        <table class="audit">
+          <thead>
+            <tr>
+              <th>IP</th>
+              <th>Expires At</th>
+              <th>Created At</th>
+              <th>Username</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let i = 0; i < bans.length; i++) { %>
+              <tr>
+                <td><%=bans[i].ip%></td>
+                <td><%=bans[i].expiresAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %></td>
+                <td><%=bans[i].createdAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %></td>
+                <td>
+                  <a href="/user/<%=bans.user ? bans[i].user.username : 'Anonymous'%>">
+                    <%=bans[i].user ? bans[i].user.username : 'Anonymous'%>
+                  </a>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>  
+        <hr />
+        <h3>Create Topic</h3>
+        <div class="create">
+          <form action="/topic" method="post">
+            <% if (errors.length > 0) { %>
+              <% for (var i = 0; i < errors.length; i++) { %>
+                <div class="error"><%=errors[i]%></div>
+              <% } %>
+            <% } %>
+            
+            <label for="title">Title</label>
+            <input id="title" name="title" placeholder="Title"  maxlength="200" />
+            <label for="slug">Slug</label>
+            <input id="slug" name="slug" placeholder="Slug" maxlength="10" />
+            <label for="body">Body</label>
+            <textarea id="body" name="body" rows="4" cols="50" maxlength="5000"></textarea>
+            <button type="submit" value="Submit">Create topic</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <%- include('./partials/footer'); %>
+  </body>
+</html>

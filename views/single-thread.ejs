@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <%- include('./partials/header'); %>
+
+    <div class="center">
+      <h1 class="text-center">Thread</h1>
+      <div class="post">
+        <a href="/<%= thread.topic.slug %>/">< Back</a>
+        <h2 class="post__title"><%= thread.title %></h2>
+        <div class="post__details">
+          <p class="postedat postedby">posted <%= thread.createdAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %> by</p>
+          <a class="<%= thread.createdBy.username === 'admin' ? 'admin-username' : 'topiclink__user' %>" href="/user/<%=thread.createdBy.username%>">
+            <%= thread.createdBy.username %>
+            <% if (user && user.role.split(",").includes("ADMIN")) { %>
+              [<%= thread.ip%>]
+            <% } %>
+          </a>
+          <a href="" class="topiclink__no">Thread.<%=thread.globalCount%></a> 
+        </div>
+
+        <% if (user && user.role.split(",").includes("ADMIN")) { %>
+          <div>
+            <button data-id="<%=thread.id%>" data-type="THREAD" data-action="delete" class="admin-button">Delete</button>
+            <% if ((thread.createdBy.bannedAt === null) && user.id !== thread.createdBy.id) { %>
+              <button data-user="<%=thread.createdBy.id%>" data-action="ban" class="admin-button">Ban</button>
+            <% } %>
+
+            <% if ((thread.createdBy.bannedAt > new Date()) && user.id !== thread.createdBy.id) { %>
+              <button data-user="<%=thread.createdBy.id%>" data-action="unban" class="admin-button">Unban</button>
+            <% } %>
+
+            <button data-ip="<%=thread.ip%>" data-action="banip" class="admin-button">Ban IP</button>
+            <button data-id="<%=thread.id%>" data-type="THREAD" data-action="editToggle" class="admin-button">Edit</button>
+          </div>
+        <% } %>
+
+        <% if (user && user.role.split(",").includes("ADMIN")) { %>
+          <div class="edit" data-id="<%=thread.id%>" data-type="THREAD">
+            <label for="title">Update Title</label>
+            <input name="title" placeholder="Title" value="<%=thread.title%>" />
+            <label for="body">Update body</label>
+            <textarea name="body" rows="4" cols="50" maxlength="5000"><%= thread.body %></textarea>
+            <button type="submit" value="Submit" data-action="editTopic" data-id="<%=thread.id%>" data-type="THREAD" class="admin-button">Edit thread</button>
+          </div>
+        <% } %>
+
+        <div class="post__content content">
+          <%- thread.bodyHtml %>
+        </div>
+
+        <hr />
+
+        <div class="create">
+          <form action="/<%= thread.topic.slug %>/<%=thread.globalCount%>" method="post">
+            <% if (errors.length > 0) { %>
+              <% for (var i = 0; i < errors.length; i++) { %>
+                <div class="error"><%=errors[i]%></div>
+              <% } %>
+            <% } %>
+            <input
+              type="hidden"
+              name="CSRFToken"
+              value="<%=csrfToken%>"
+            />
+            <label for="body">Body</label>
+            <textarea id="body" name="body" rows="4" cols="50" maxlength="5001" placeholder="Type here..."></textarea>
+            <button type="submit" value="Submit">Create reply</button>
+          </form>
+        </div>
+
+        <hr />
+
+        <% for (var i = 0; i < thread.replies.length; i++) { %>
+          <div class="thread <%=(i === thread.replies.length - 1) ? '' : 'mb-10' %> thread--small">
+            <div class="thread__details thread__details--inline">
+              <p class="postedat postedby">posted <%= thread.replies[i].createdAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %> by</p>
+              <% if (thread.replies[i].createdBy.username === 'Prog') { %>
+                <a class="topiclink__user" href="/user/<%=thread.replies[i].createdBy.username%>"><%=thread.replies[i].progName%></a>
+              <% } else { %>
+              <a class="<%= thread.replies[i].createdBy.username === 'admin' ? 'admin-username' : 'topiclink__user' %>" href="/user/<%=thread.replies[i].createdBy.username%>">
+                <%= thread.replies[i].createdBy.username %>
+                <% if (user && user.role.split(",").includes("ADMIN")) { %>
+                  [<%= thread.replies[i].ip%>]
+                <% } %>
+              </a>
+              <% } %>
+              <a id="<%=thread.replies[i].globalCount%>" href="/<%= thread.topic.slug %>/<%=thread.globalCount%>/<%=thread.slug%>#<%=thread.replies[i].globalCount%>" class="topiclink__no">Reply.<%=thread.replies[i].globalCount%></a> 
+            </div>
+  
+            <% if (user && user.role.split(",").includes("ADMIN")) { %>
+              <div>
+                <button data-id="<%=thread.replies[i].id%>" data-type="REPLY" data-action="delete" class="admin-button">Delete</button>
+                <% if ((thread.replies[i].createdBy.bannedAt === null) && user.id !== thread.replies[i].createdBy.id) { %>
+                  <button data-user="<%=thread.replies[i].createdBy.id%>" data-action="ban" class="admin-button">Ban</button>
+                <% } %>
+      
+                <% if ((thread.replies[i].createdBy.bannedAt > new Date()) && user.id !== thread.replies[i].createdBy.id) { %>
+                  <button data-user="<%=thread.replies[i].createdBy.id%>" data-action="unban" class="admin-button">Unban</button>
+                <% } %>
+
+                <button data-ip="<%=thread.replies[i].ip%>" data-action="banip" class="admin-button">Ban IP</button>
+                <button data-id="<%=thread.replies[i].id%>" data-type="REPLY" data-action="editToggle" class="admin-button">Edit</button>
+              </div>
+            <% } %>
+
+            <% if (user && user.role.split(",").includes("ADMIN")) { %>
+              <div class="edit" data-id="<%=thread.replies[i].id%>" data-type="REPLY">
+                <label for="body">Update body</label>
+                <textarea name="body" rows="4" cols="50" maxlength="5000"><%=thread.replies[i].body%></textarea>
+                <button type="submit" value="Submit" data-action="editTopic" data-id="<%=thread.replies[i].id%>" data-type="REPLY" class="admin-button">Edit reply</button>
+              </div>
+            <% } %>
+
+            <div class="thread__body content">
+              <%- thread.replies[i].bodyHtml %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <%- include('./partials/footer'); %>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <%- include('./partials/header'); %>
+
+    <div class="center">
+      <div class="form-panel">
+        <div class="login">
+          <h2>Login</h2>
+
+          <% if (loginErrors.length > 0) { %>
+            <% for (var i = 0; i < loginErrors.length; i++) { %>
+              <div class="error"><%=loginErrors[i]%></div>
+            <% } %>
+          <% } %>
+    
+          <form method="POST" action="/user/login">
+            <input
+              type="hidden"
+              name="CSRFToken"
+              value="<%= loginCsrfToken %>"
+            />
+            <input type="text" minlength="1" maxlength="25"  name="username" placeholder="username">
+            <input type="password" minlength="10" maxlength="30" name="password" placeholder="password">
+            <button type="submit">Login</button>
+          </form>
+        </div>
+
+        <hr />
+
+        <div class="register">
+          <h2>Register</h2>
+          <% if (registerErrors.length > 0) { %>
+            <% for (var i = 0; i < registerErrors.length; i++) { %>
+              <div class="error"><%=registerErrors[i]%></div>
+            <% } %>
+          <% } %>
+      
+          <form method="POST" action="/user/register">
+            <input
+              type="hidden"
+              name="CSRFToken"
+              value="<%=registerCsrfToken%>"
+            />
+            <input type="text" name="username" placeholder="username">
+            <input type="password" minlength="10" maxlength="30" name="password" placeholder="password">
+            <input type="password" minlength="10" maxlength="30" name="confirmPassword" placeholder="confirm password">
+            <input type="text" minlength="1" maxlength="50" name="referralCode" placeholder="referral code">
+            <button type="submit">Register</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <%- include('./partials/footer'); %>
+  </body>
+</html>

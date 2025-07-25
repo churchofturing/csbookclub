@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <%- include('./partials/header'); %>
+
+    <div class="center">
+      <div class="user-details">
+        <h3><%= pageUser.username %></h3>
+        <p>Registered: <i><%= pageUser.createdAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %></i></p>
+        <% if (referredBy) { %>
+        <p>Referred by: <i><a href="/user/<%= referredBy %>"><%= referredBy %></a></i></p>
+        <% } %>
+
+        <% if (pageUser.bannedAt && pageUser.bannedAt > new Date()) { %>
+          <p>Banned until: <i><%= pageUser.bannedAt.toLocaleTimeString('en-GB') %> <%= pageUser.bannedAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %></i></p>
+          <% if (user && user.role.split(",").includes("ADMIN")) { %>
+            <% if (user.id !== pageUser.id) { %>
+              <button data-user="<%=pageUser.id%>" data-action="unban" class="admin-button">Unban</button>
+            <% } %>
+          <% } %>
+        <% } else { %>
+          <% if (user && user.role.split(",").includes("ADMIN")) { %>
+            <% if (user.id !== pageUser.id) { %>
+              <button data-user="<%=pageUser.id%>" data-action="ban" class="admin-button">Ban</button>
+            <% } %>
+          <% } %>
+        <% } %>
+        <p>Topics: <%= metadata.topicCount %> | Threads: <%= metadata.threadCount %> | Replies: <%= metadata.replyCount %></p>
+      </div>
+
+        <% if (user) { %>
+          <% if (user.id === pageUser.id) { %>
+          <hr class="user-divider" />
+          <div class="referral-cnt">
+            <table>
+              <thead>
+                <tr>
+                  <th>Referral Code</th>
+                  <th>Used</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (var i = 0; i < referralCodes.length; i++) { %>
+                  <tr>
+                    <td><span class="referral-code"><%= referralCodes[i].code %></span></td>
+                    <td><span class="active"><%= !referralCodes[i].active %></span></td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+
+            <% if (referralCodes.length >= referLimit) { %>
+              <p>[ You have reached your referral limit. ]</p>
+            <% } else { %>
+            <form action="/user/referral" method="POST">
+              <button type="submit">Create code</button>
+            </form>
+            <% } %>
+          <% } %>
+        <% } %>
+
+      <hr class="user-divider" />
+
+      <div class="posts">
+        <% for (var i = 0; i < posts.length; i++) { %>
+          <div class="thread thread--small">
+            <p class="type-label"><%= posts[i].type %></p>
+            <% if (posts[i].type !== "Reply") { %>
+              <h2 class="thread__header__title"><%= posts[i].title %></h2>
+            <% } %>
+            <div class="thread__details--inline">
+              <p class="postedat postedby">
+                posted <%= posts[i].createdAt.toLocaleString('fr-FR', { timeZoneName: 'short' }) %>
+              </p>
+              <a id="<%=posts[i].id%>" href="<%=posts[i].link%>" class="topiclink__no">[Link]</a>
+              <% if (user && user.role.split(",").includes("ADMIN")) { %>
+                <p class="postedby">[<%= posts[i].ip%>]</p>
+              <% } %>
+            </div>
+    
+            <hr class="seperation" />
+
+            <div class="thread__body content">
+              <%- posts[i].bodyHtml %>
+            </div>
+          </div>
+          <% } %>
+      </div>
+    </div>
+
+    <%- include('./partials/footer'); %>
+  </body>
+</html>

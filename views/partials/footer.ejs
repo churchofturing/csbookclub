@@ -1,0 +1,15 @@
+<footer>
+  <% if (locals.startTime) { %>
+    <p class="footer timer">
+      Rendered in <%=Date.now() - locals.startTime%>ms
+    </p>
+  <% } %>
+  <div class="theme-selector">
+    <select id="theme-select">
+      <option value="csbookclub">Bookclub</option>
+      <option value="yotsuba">Yotsuba</option>
+      <option value="yotsuba-b">Yotsuba B</option>
+      <option value="tomorrow">Tomorrow</option>
+    </select>
+  </div>
+</footer>

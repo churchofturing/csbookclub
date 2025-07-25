@@ -3,7 +3,7 @@ name: Deploy on Pull Request
 on:
   pull_request:
     branches:
-      - mastert branches as needed
+      - master
 
 jobs:
   deploy:

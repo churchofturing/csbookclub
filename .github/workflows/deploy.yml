@@ -1,3 +1,54 @@
+# name: Deploy on Pull Request
+
+# on:
+#   pull_request:
+#     branches:
+#       - mastert branches as needed
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+#       with:
+#         fetch-depth: 0  # Get full history for better rsync
+    
+#     - name: Setup SSH
+#       uses: webfactory/ssh-agent@v0.9.0
+#       with:
+#         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    
+#     - name: Add server to known hosts
+#       run: |
+#         mkdir -p ~/.ssh
+#         ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+    
+#     # - name: Rsync repository to server
+#     #   run: |
+#     #     rsync -avz --delete \
+#     #       --exclude='.git/' \
+#     #       --exclude='.github/' \
+#     #       --exclude='node_modules/' \
+#     #       --exclude='.env*' \
+#     #       --exclude='*.log' \
+#     #       --exclude='*.dev' \
+#     #       --exclude='*.env' \
+#     #       ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
+    
+#     - name: Run post-deployment commands
+#       run: |
+#         ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+#           cd ${{ secrets.DEPLOY_PATH }}
+          
+#           # Example commands - customize these for your needs
+#           echo "Deployment started at $(date)"
+
+#           # sudo chown -R deploy ${{ secrets.DEPLOY_PATH }}
+          
+#           echo "Deployment completed at $(date)"
+#         EOF
 name: Deploy on Pull Request
 
 on:
@@ -15,48 +66,68 @@ jobs:
       with:
         fetch-depth: 0  # Get full history for better rsync
     
-    - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    
-    - name: Add server to known hosts
+    - name: Setup SSH (Manual Method)
       run: |
         mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
         ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        
+        # Test SSH connection
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} "echo 'SSH connection successful'"
     
-    # - name: Rsync repository to server
-    #   run: |
-    #     rsync -avz --delete \
-    #       --exclude='.git/' \
-    #       --exclude='.github/' \
-    #       --exclude='node_modules/' \
-    #       --exclude='.env*' \
-    #       --exclude='*.log' \
-    #       --exclude='*.dev' \
-    #       --exclude='*.env' \
-    #       ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
-    
-    - name: Run post-deployment commands
+    - name: Rsync repository to server
       run: |
-        ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+        rsync -avz --delete \
+          -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+          --exclude='.git/' \
+          --exclude='.github/' \
+          --exclude='node_modules/' \
+          --exclude='.env*' \
+          --exclude='*.log' \
+          --exclude='__pycache__/' \
+          --exclude='*.pyc' \
+          --exclude='vendor/' \
+          ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
+    
+    - name: Run post-deployment commands on server
+      run: |
+        ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           cd ${{ secrets.DEPLOY_PATH }}
           
-          # Example commands - customize these for your needs
           echo "Deployment started at $(date)"
-
-          # sudo chown -R deploy ${{ secrets.DEPLOY_PATH }}
           
-          echo "Deployment completed at $(date)"
-        EOF
-
-    - name: Cleanup SSH agent
+          # Set proper ownership and permissions
+          # sudo chown -R $USER:$USER .
+          # find . -type f -exec chmod 644 {} \;
+          # find . -type d -exec chmod 755 {} \;
+          
+          # Example: Node.js application
+          # npm install --production
+          # npm run build
+          # pm2 restart app || pm2 start ecosystem.config.js
+          
+          # Example: PHP application
+          # composer install --no-dev --optimize-autoloader
+          # php artisan migrate --force
+          # php artisan config:cache
+          # php artisan route:cache
+          # sudo systemctl reload php8.1-fpm
+          # sudo systemctl reload nginx
+          
+          # Example: Python application
+          # python3 -m venv venv
+          # source venv/bin/activate
+          # pip install -r requirements.txt
+          # python manage.py migrate
+          # sudo systemctl restart gunicorn
+          # sudo systemctl reload nginx
+          
+      - name: Cleanup SSH keys
       if: always()
       run: |
-        if [ -n "$SSH_AUTH_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
-          ssh-add -D
-          eval $(ssh-agent -k)
-        fi
+        rm -f ~/.ssh/id_ed25519
+        echo "SSH cleanup completed"
         
         echo "Deployment completed at $(date)"
         EOF

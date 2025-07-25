@@ -47,9 +47,9 @@ jobs:
           echo "Deployment started at $(date)"
           
           # Set proper ownership and permissions
-          # sudo chown -R $USER:$USER .
-          # find . -type f -exec chmod 644 {} \;
-          # find . -type d -exec chmod 755 {} \;
+          #sudo chown -R $USER:$USER .
+          #find . -type f -exec chmod 644 {} \;
+          #find . -type d -exec chmod 755 {} \;
           
           # Example: Node.js application
           # npm install --production
@@ -72,11 +72,11 @@ jobs:
           # sudo systemctl restart gunicorn
           # sudo systemctl reload nginx
           
-      - name: Cleanup SSH keys
+          echo "Deployment completed at $(date)"
+        EOF
+    
+    - name: Cleanup SSH keys
       if: always()
       run: |
         rm -f ~/.ssh/id_ed25519
         echo "SSH cleanup completed"
-        
-        echo "Deployment completed at $(date)"
-        EOF

@@ -1,7 +1,7 @@
 name: Deploy on Pull Request
 
 on:
-  pull_request:
+  push:
     branches:
       - master
 
@@ -34,9 +34,6 @@ jobs:
           --exclude='node_modules/' \
           --exclude='.env*' \
           --exclude='*.log' \
-          --exclude='__pycache__/' \
-          --exclude='*.pyc' \
-          --exclude='vendor/' \
           --exclude='*.db' \
           ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
     
@@ -60,7 +57,7 @@ jobs:
           sudo systemctl status csbookclub
 
           sudo systemctl reload nginx
-          
+    
           echo "Deployment completed at $(date)"
         EOF
     

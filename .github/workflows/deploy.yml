@@ -1,0 +1,68 @@
+name: Deploy on Pull Request
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Get full history for better rsync
+    
+    - name: Setup SSH (Manual Method)
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        
+        # Test SSH connection
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} "echo 'SSH connection successful'"
+    
+    - name: Rsync repository to server
+      run: |
+        rsync -avz \
+          -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+          --exclude='.git/' \
+          --exclude='.github/' \
+          --exclude='node_modules/' \
+          --exclude='.env*' \
+          --exclude='*.log' \
+          --exclude='*.db' \
+          ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
+    
+    - name: Run post-deployment commands on server
+      run: |
+        ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          cd ${{ secrets.DEPLOY_PATH }}
+          
+          echo "Deployment started at $(date)"
+
+          sudo chown -R $USER:$USER .
+          
+          /home/deploy/.bun/bin/bun install
+          
+          /home/deploy/.bun/bin/bunx prisma generate client
+
+          sudo systemctl restart csbookclub
+
+          sleep 2
+
+          sudo systemctl status csbookclub
+
+          sudo systemctl reload nginx
+    
+          echo "Deployment completed at $(date)"
+        EOF
+    
+    - name: Cleanup SSH keys
+      if: always()
+      run: |
+        rm -f ~/.ssh/id_ed25519
+        echo "SSH cleanup completed"

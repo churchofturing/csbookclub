@@ -27,7 +27,7 @@ jobs:
     
     - name: Rsync repository to server
       run: |
-        rsync -avz --delete \
+        rsync -avz \
           -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
           --exclude='.git/' \
           --exclude='.github/' \
@@ -37,6 +37,7 @@ jobs:
           --exclude='__pycache__/' \
           --exclude='*.pyc' \
           --exclude='vendor/' \
+          --exclude='*.db' \
           ./ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}
     
     - name: Run post-deployment commands on server

@@ -1,4 +1,4 @@
-# csbook.club
+# [csbook.club](https://csbook.club/)
 
 > **A minimal textboard for Computer Science enthusiasts** — Inspired by the legendary textboard BBS culture of the 2000s
 

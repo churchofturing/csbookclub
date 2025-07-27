@@ -31,7 +31,7 @@ export const getIndexPage = async (req: Request, res: Response) => {
       page: {
         ...buildPageMetadata(
           req,
-          'Index - Computer Science Book Club',
+          'Index - CS Book Club',
           'A BBS textboard for discussing the classics of computer science.',
         ),
         rss: buildRssUrl(req),

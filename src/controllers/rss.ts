@@ -160,7 +160,7 @@ const getSingleTopicRss = async (req: Request, res: Response) => {
 };
 
 const getSingleThreadRss = async (req: Request, res: Response) => {
-  const { slug } = req.params;
+  const { slug, threadSlug } = req.params;
   const globalCount = parseInt(req.params.globalCount, 10);
 
   if (!slug) return fourohfour(req, res);
@@ -179,6 +179,7 @@ const getSingleThreadRss = async (req: Request, res: Response) => {
     where: {
       globalCount,
       topicId: topic.id,
+      slug: threadSlug,
     },
     include: {
       createdBy: {

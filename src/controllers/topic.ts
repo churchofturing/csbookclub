@@ -191,11 +191,11 @@ const getTopic = async (req: Request, res: Response, next: NextFunction, errors:
     startTime: req.startTime,
     csrfToken: generateToken(req),
     page: {
-      title: `${topic.title} - Computer Science Book Club`,
+      title: `${topic.title} - CS Book Club`,
       desc: `${topic.body
         .trim()
         .replace(/(\r\n|\n|\r)/gm, ' ')
-        .slice(0, 50)}...`,
+        .slice(0, 100)}...`,
       url,
       rss,
     },

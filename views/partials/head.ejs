@@ -2,21 +2,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-
-<title><%= (locals.page && locals.page.title) || "CS Book Club" %></title>
-<meta name="keywords" content="computer, science, lambda, compsci, book, study, programming, math">
+<!-- Primary Meta Tags -->
+<title><%= (locals.page && locals.page.title) || "CS Book Club - Computer Science Community & Study Group" %></title>
+<meta name="title" content="<%= (locals.page && locals.page.title) || 'CS Book Club - Computer Science Community & Study Group' %>">
+<meta name="description" content="<%= (locals.page && locals.page.desc) || 'Join CS Book Club, a computer science focused community for studying programming, algorithms, math, and technical books. Connect with fellow developers and CS enthusiasts.' %>">
+<meta name="keywords" content="computer science, programming, algorithms, data structures, software engineering, coding, technical books, study group, developer community, computer science education, CS, programming languages, software development">
 <meta name="author" content="CS Book Club">
-<meta name="robots" content="index,follow">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="referrer" content="no-referrer-when-downgrade">
-<meta name="description" content="<%= (locals.page && locals.page.desc) || 'A computer science focused BBS textboard.' %>">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="<%= (locals.page && locals.page.url) || 'https://csbook.club' %>">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="<%= (locals.page && locals.page.url) || '' %>">
-<meta property="og:title" content="<%= (locals.page && locals.page.title) || 'CS Book Club' %>">
-<meta property="og:description" content="<%= (locals.page && locals.page.desc) || 'A computer science focused BBS textboard.' %>">
+<meta property="og:site_name" content="CS Book Club">
+<meta property="og:url" content="<%= (locals.page && locals.page.url) || 'https://csbook.club' %>">
+<meta property="og:title" content="<%= (locals.page && locals.page.title) || 'CS Book Club - Computer Science Community & Study Group' %>">
+<meta property="og:description" content="<%= (locals.page && locals.page.desc) || 'Join CS Book Club, a computer science focused community for studying programming, algorithms, math, and technical books.' %>">
+<meta property="og:image" content="/public/og_image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="CS Book Club - Computer Science Community">
+<meta property="og:locale" content="en_US">
 
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="<%= (locals.page && locals.page.url) || 'https://csbook.club' %>">
+<meta name="twitter:title" content="<%= (locals.page && locals.page.title) || 'CS Book Club - Computer Science Community & Study Group' %>">
+<meta name="twitter:description" content="<%= (locals.page && locals.page.desc) || 'Join CS Book Club, a computer science focused community for studying programming, algorithms, math, and technical books.' %>">
+<meta name="twitter:image" content="/public/og_image.png">
+<meta name="twitter:image:alt" content="CS Book Club - Computer Science Community">
 
+<!-- Additional SEO Tags -->
+<meta name="theme-color" content="#be342d">
+<meta name="msapplication-TileColor" content="#be342d">
+<meta name="application-name" content="CS Book Club">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "CS Book Club",
+  "description": "A computer science focused community for studying programming, algorithms, math, and technical books",
+  "url": "<%= (locals.page && locals.page.url) || 'https://csbook.club' %>"
+}
+</script>
+
+<!-- Favicon and Icons -->
 <link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png">

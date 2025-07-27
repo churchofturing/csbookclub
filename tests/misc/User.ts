@@ -40,8 +40,8 @@ const normalUser = new User({
 // TODO: need to link these details with those in seed.ts
 const adminUser = new User({
   username: 'admin',
-  password: '2zwFzzQWR0biBgictm47',
-  confirmPassword: '2zwFzzQWR0biBgictm47',
+  password: 'exampleadminpassword',
+  confirmPassword: 'exampleadminpassword',
 });
 
 export { normalUser, adminUser };

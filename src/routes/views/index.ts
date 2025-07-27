@@ -79,8 +79,8 @@ router.post(
   createThread,
 );
 
-router.get('/:slug/:globalCount/.rss', getSingleThreadRss);
 router.get('/:slug/:globalCount/:threadSlug', getThread);
+router.get('/:slug/:globalCount/:threadSlug/.rss', getSingleThreadRss);
 router.get('/:slug/:globalCount', getThreadRedirect);
 
 router.post(

@@ -71,11 +71,11 @@ const getThread = async (
     startTime: req.startTime,
     csrfToken: generateToken(req),
     page: {
-      title: `${thread.title} - Computer Science Book Club`,
+      title: `${thread.title} - CS Book Club`,
       desc: `${thread.body
         .replace(/(\r\n|\n|\r|>)/gm, ' ')
         .trim()
-        .slice(0, 50)}...`,
+        .slice(0, 100)}...`,
       url,
       rss,
     },

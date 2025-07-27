@@ -18,7 +18,7 @@
           <a></a>
         </div>
         <div class="hero__right">
-          <img class="hero__right__image" src="/public/banners/<%=bannerImage%>" />
+          <img class="hero__right__image" alt="Decorative hero banner image" src="/public/banners/<%=bannerImage%>" />
         </div>
       </div>
       
@@ -29,7 +29,7 @@
           <div class="topiclink">
             <h2 class="topiclink__title">
               <% if (topics[i].pinned) { %>
-                <img src='/public/sticky.gif' />
+                <img alt="Small gif of a pin" src='/public/sticky.gif' />
               <% } %>
               <%= topics[i].title %>
             </h2>
